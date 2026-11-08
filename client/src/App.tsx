@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import DashboardLayout from "./layout/DashboardLayout";
 import DashboardPage from "./pages/dashboard/DashboardPage";
+import ProfilePage from "./pages/ProfilePage";
 import SharedFilesPage from "./pages/dashboard/SharedFilesPage";
 import TrashPage from "./pages/dashboard/TrashPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -53,7 +54,8 @@ function App() {
           }
         >
           <Route index element={<DashboardPage />} />
-          <Route path="trash" element={<TrashPage />} />
+          <Route path="trash" element={<TrashPage />} />,
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
         {/* 404 Not Found */}
