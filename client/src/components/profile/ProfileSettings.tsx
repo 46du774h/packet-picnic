@@ -2,20 +2,16 @@
 import { useState } from "react";
 import {
   Bell,
-  Shield,
-  Lock,
   Eye,
   Trash2,
   ChevronRight,
 } from "lucide-react";
 
 interface ProfileSettingsProps {
-  onChangePassword: () => void;
   onDeleteAccount: () => void;
 }
 
 const ProfileSettings = ({
-  onChangePassword,
   onDeleteAccount,
 }: ProfileSettingsProps) => {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -50,7 +46,7 @@ const ProfileSettings = ({
       <div>
         <h2 className="text-lg font-semibold">Account Settings</h2>
         <p className="text-sm text-muted-foreground">
-          Manage your preferences and account security.
+          Manage your account preferences.
         </p>
       </div>
 
@@ -113,32 +109,6 @@ const ProfileSettings = ({
           </div>
         </div>
 
-        <div className="p-5">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="rounded-lg bg-emerald-500/10 p-2.5">
-              <Shield className="h-5 w-5 text-emerald-500" />
-            </div>
-
-            <div>
-              <h3 className="font-medium">Security</h3>
-              <p className="text-xs text-muted-foreground">
-                Keep your account protected.
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={onChangePassword}
-            className="flex w-full items-center justify-between rounded-lg border border-border p-3 text-left transition hover:bg-muted"
-          >
-            <span className="flex items-center gap-3">
-              <Lock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Change Password</span>
-            </span>
-
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </button>
-        </div>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border bg-card">

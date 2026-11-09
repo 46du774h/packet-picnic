@@ -17,8 +17,15 @@ type FileData = {
   createdAt?: string;
 };
 
+type UploadResult = {
+  data: {
+    uniqueId: string;
+    shareUrl?: string;
+  };
+};
+
 type FileContextType = {
-  upload: (file: File) => Promise<unknown>;
+  upload: (file: File) => Promise<UploadResult>;
   getFile: (uniqueId: string) => Promise<unknown>;
   getAllFiles: () => Promise<unknown>;
   getTrashFiles: () => Promise<unknown>;

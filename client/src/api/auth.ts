@@ -5,6 +5,7 @@ export interface AuthUser {
   name: string;
   email: string;
   picture: string | null;
+  createdAt: string;
 }
 
 interface GoogleLoginResponse {
@@ -35,4 +36,22 @@ export const getCurrentUser = async () => {
   }>("/users/me");
 
   return response.data.data;
+};
+
+export const updateCurrentUser = async (data: {
+  name: string;
+}) => {
+  const response = await api.patch<{
+    statusCode: number;
+    data: AuthUser;
+    message: string;
+    success: boolean;
+  }>("/users/me", data);
+
+  return response.data.data;
+};
+
+export const deleteCurrentUser = async () => {
+  const response = await api.delete("/users/me");
+  return response.data;
 };
