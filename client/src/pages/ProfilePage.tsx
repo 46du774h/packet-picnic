@@ -1,35 +1,47 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X, Save, UserCircle } from "lucide-react";
+import { toast } from "sonner";
 
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileStats from "@/components/profile/ProfileStats";
 import ProfileInformation from "@/components/profile/ProfileInformation";
-import ProfileSettings from "@/components/profile/ProfileSettings";
+import { useAuth } from "@/hooks/useAuth";
+import { useFiles } from "@/hooks/useFiles";
 
 interface UserProfile {
   name: string;
   email: string;
-  username: string;
-  location: string;
   joinedDate: string;
 }
 
-const initialUser: UserProfile = {
-  name: "Abdullah",
-  email: "abdullah@example.com",
-  username: "abdullah",
-  location: "Faisalabad, Pakistan",
-  joinedDate: "November 2026",
-};
-
 const ProfilePage = () => {
-  const [user, setUser] = useState<UserProfile>(initialUser);
+  const { user: authUser, updateProfile } = useAuth();
+  const { allFiles, getAllFiles } = useFiles();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<UserProfile>(initialUser);
+  const [formData, setFormData] = useState<UserProfile | null>(null);
+
+  const user: UserProfile | null = authUser
+    ? {
+        name: authUser.name,
+        email: authUser.email,
+        joinedDate: new Date(authUser.createdAt).toLocaleDateString(
+          undefined,
+          { month: "long", year: "numeric" }
+        ),
+      }
+    : null;
+
+  useEffect(() => {
+    void getAllFiles().catch(() => {
+      toast.error("Unable to load your file statistics");
+    });
+  }, []);
 
   const openEditModal = () => {
-    setFormData(user);
+    if (user) {
+      setFormData(user);
+    }
     setIsEditing(true);
   };
 
@@ -42,33 +54,44 @@ const ProfilePage = () => {
   ) => {
     const { name, value } = event.target;
 
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setFormData((previous) =>
+      previous
+        ? {
+            ...previous,
+            [name]: value,
+          }
+        : previous
+    );
   };
 
-  const handleSaveProfile = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSaveProfile = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
-    setUser(formData);
-    setIsEditing(false);
-  };
+    if (!formData) {
+      return;
+    }
 
-  const handleChangePassword = () => {
-    window.alert("Connect this action to your password management API.");
-  };
-
-  const handleDeleteAccount = () => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    );
-
-    if (confirmed) {
-      window.alert("Connect this action to your account deletion API.");
+    try {
+      await updateProfile({
+        name: formData.name,
+      });
+      setIsEditing(false);
+      toast.success("Profile updated");
+    } catch {
+      toast.error("Unable to update your profile");
     }
   };
 
+  if (!user) {
+    return null;
+  }
+
+  const totalDownloads = allFiles.reduce(
+    (total, file) => total + file.downloadCount,
+    0
+  );
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto w-full max-w-6xl space-y-7 px-4 py-8 sm:px-6 lg:px-8">
@@ -92,39 +115,29 @@ const ProfilePage = () => {
         <ProfileHeader
           name={user.name}
           email={user.email}
+          avatar={authUser?.picture ?? undefined}
           joinedDate={user.joinedDate}
           onEdit={openEditModal}
         />
 
         {/* Account Statistics */}
         <ProfileStats
-          totalFiles={24}
-          totalUploads={18}
-          totalDownloads={42}
-          storageUsed="2.4"
-          storageLimit="10"
+          totalFiles={allFiles.length}
+          totalUploads={allFiles.length}
+          totalDownloads={totalDownloads}
         />
 
         {/* Personal Information */}
         <ProfileInformation
           name={user.name}
           email={user.email}
-          username={user.username}
-          location={user.location}
           joinedDate={user.joinedDate}
-          onEdit={openEditModal}
-        />
-
-        {/* Account Settings */}
-        <ProfileSettings
-          onChangePassword={handleChangePassword}
-          onDeleteAccount={handleDeleteAccount}
         />
 
       </div>
 
       {/* Edit Profile Modal */}
-      {isEditing && (
+      {isEditing && formData && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
           onMouseDown={(event) => {
@@ -179,63 +192,6 @@ const ProfilePage = () => {
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="mb-2 block text-sm font-medium"
-                >
-                  Email Address
-                </label>
-
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="username"
-                  className="mb-2 block text-sm font-medium"
-                >
-                  Username
-                </label>
-
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  required
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="location"
-                  className="mb-2 block text-sm font-medium"
-                >
-                  Location
-                </label>
-
-                <input
-                  id="location"
-                  name="location"
-                  type="text"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  placeholder="Enter your location"
                   className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>

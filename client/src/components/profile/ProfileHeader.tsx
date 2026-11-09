@@ -17,13 +17,10 @@ const ProfileHeader = ({
   onEdit,
 }: ProfileHeaderProps) => {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-border bg-card">
-      <div className="h-32 bg-linear-to-r from-blue-600 via-indigo-600 to-violet-600 sm:h-40" />
-
-      <div className="px-5 pb-6 sm:px-8">
-        <div className="-mt-12 flex flex-col gap-5 sm:-mt-14 sm:flex-row sm:items-end sm:justify-between">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-            <div className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border-4 border-card bg-muted sm:h-28 sm:w-28">
+    <section className="rounded-xl border border-border bg-card p-5 sm:p-8">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-border bg-muted sm:h-24 sm:w-24">
               {avatar ? (
                 <img
                   src={avatar}
@@ -31,7 +28,7 @@ const ProfileHeader = ({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-blue-100 text-3xl font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                <div className="flex h-full w-full items-center justify-center bg-muted text-3xl font-semibold text-foreground">
                   {name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -46,7 +43,7 @@ const ProfileHeader = ({
                 <h1 className="text-2xl font-bold tracking-tight">
                   {name}
                 </h1>
-                <ShieldCheck className="h-5 w-5 text-blue-500" />
+                <ShieldCheck className="h-5 w-5 text-muted-foreground" />
               </div>
 
               <p className="mt-1 text-sm text-muted-foreground">
@@ -67,7 +64,6 @@ const ProfileHeader = ({
             Edit Profile
           </button>
         </div>
-      </div>
     </section>
   );
 };

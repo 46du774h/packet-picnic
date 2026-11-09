@@ -158,12 +158,6 @@ const DashboardPage = () => {
           </p>
         </div>
 
-        <span className="text-sm text-muted-foreground">
-          {filteredFiles.length}{" "}
-          {filteredFiles.length === 1
-            ? "file"
-            : "files"}
-        </span>
       </div>
 
       {/* Toolbar */}

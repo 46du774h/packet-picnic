@@ -7,6 +7,8 @@ import {
 import {
   googleLogin,
   getCurrentUser,
+  updateCurrentUser,
+  deleteCurrentUser,
   type AuthUser,
 } from "@/api/auth";
 
@@ -16,6 +18,10 @@ interface AuthContextType {
   isLoading: boolean;
   login: (credential: string) => Promise<void>;
   logout: () => void;
+  updateProfile: (data: {
+    name: string;
+  }) => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 export const AuthContext = createContext<
@@ -68,6 +74,18 @@ export const AuthProvider = ({
     setUser(null);
   };
 
+  const updateProfile = async (data: {
+    name: string;
+  }) => {
+    const updatedUser = await updateCurrentUser(data);
+    setUser(updatedUser);
+  };
+
+  const deleteAccount = async () => {
+    await deleteCurrentUser();
+    logout();
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -76,6 +94,8 @@ export const AuthProvider = ({
         isLoading,
         login,
         logout,
+        updateProfile,
+        deleteAccount,
       }}
     >
       {children}

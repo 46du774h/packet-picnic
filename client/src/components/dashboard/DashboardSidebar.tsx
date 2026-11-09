@@ -1,10 +1,18 @@
-import { FileText, Trash2, LogOut } from "lucide-react";
+import { FileText, Trash2, UserCircle, LogOut } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
-const DashboardSidebar = () => {
+interface DashboardSidebarProps {
+  onNavigate?: () => void;
+}
+
+const DashboardSidebar = ({ onNavigate }: DashboardSidebarProps) => {
   const { logout } = useAuth();
+
+  const handleNavigate = () => {
+    onNavigate?.();
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -13,6 +21,7 @@ const DashboardSidebar = () => {
         <NavLink
           to="/dashboard"
           end
+          onClick={handleNavigate}
           className={({ isActive }) =>
             `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
               isActive
@@ -27,6 +36,7 @@ const DashboardSidebar = () => {
 
         <NavLink
           to="/dashboard/trash"
+          onClick={handleNavigate}
           className={({ isActive }) =>
             `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
               isActive
@@ -38,6 +48,21 @@ const DashboardSidebar = () => {
           <Trash2 className="size-4" />
           Trash
         </NavLink>
+
+        <NavLink
+          to="/dashboard/profile"
+          onClick={handleNavigate}
+          className={({ isActive }) =>
+            `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              isActive
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`
+          }
+        >
+          <UserCircle className="size-4" />
+          Profile
+        </NavLink>
       </nav>
 
       {/* Logout */}
@@ -45,7 +70,10 @@ const DashboardSidebar = () => {
         <Button
           variant="ghost"
           className="w-full justify-start gap-3 text-muted-foreground hover:bg-muted hover:text-destructive"
-          onClick={logout}
+          onClick={() => {
+            logout();
+            handleNavigate();
+          }}
         >
           <LogOut className="size-4" />
           Logout
